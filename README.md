@@ -77,7 +77,7 @@ This will be how you can handle the ephemeral nature of Docker containers with J
 
 
 #### 4. Understand the `Dockerfile`
-This is the absolute minimum setup here. We might want to add additional items as needed. Certain packages, especially the ones for data science, require additional installs for our docker-based linux server.
+This is the a setup which includes packages for usage in the jupyter notebook here. We might want to add additional items as needed. Certain packages, especially the ones for data science, require additional installs for our docker-based linux server.
 
 ```dockerfile
 FROM python:3.8.2-slim
@@ -87,7 +87,39 @@ WORKDIR ${APP_HOME}
 
 COPY . ./
 
+# Install Ubuntu dependencies
+# libopencv-dev = opencv dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        tzdata \
+        libopencv-dev \ 
+        build-essential \
+        libssl-dev \
+        libpq-dev \
+        libcurl4-gnutls-dev \
+        libexpat1-dev \
+        gettext \
+        unzip \
+        supervisor \
+        python3-setuptools \
+        python3-pip \
+        python3-dev \
+        python3-venv \
+        python3-urllib3 \
+        git \
+        && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Upgrade PIP
 RUN pip install pip pipenv --upgrade
+
+# sklearn opencv, numpy, and pandas
+RUN pip install scikit-learn opencv-contrib-python numpy pandas datetime pytz plotly seaborn psycopg2
+
+# tensorflow (including Keras)
+RUN pip install tensorflow keras
+
+# Project installs
 RUN pipenv install --skip-lock --system --dev
 
 CMD ["./scripts/entrypoint.sh"]
