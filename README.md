@@ -10,7 +10,7 @@ tbda_project
 │   │   jupyter.py
 |
 └───nbs
-│   │   notebook.tar.gz
+│   │   visualization_notebook.ipynb
 │   
 └───scripts
     │   Dockerfile
